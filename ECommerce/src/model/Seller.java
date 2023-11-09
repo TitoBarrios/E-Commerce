@@ -2,57 +2,57 @@ package model;
 
 public class Seller extends User {
 	private String startingPlace;
-	private int[] productsPointer;
-	private int[] salesHistoryPointers;
-	
+	private Product[] products;
+	private Shipment[] salesHistory;
+
 	public Seller(String address, String name, String password, String startingPlace) {
 		super(address, name, password);
 		this.startingPlace = startingPlace;
 	}
-	
+
 	public Seller(User user, String startingPlace) {
 		super(user.getAddress()[0], user.getName(), user.getPassword());
-		this.setOrderHistoryPointers(user.getOrderHistoryPointers());
+		this.setOrderHistory(user.getOrderHistory());
 		this.startingPlace = startingPlace;
 	}
 
 	public String getStartingPlace() {
 		return startingPlace;
 	}
-	
-	public int[] getProductsPointer() {
-		return productsPointer;
+
+	public Product[] getProducts() {
+		return products;
 	}
-	
-	public int[] getSalesHistoryPointers() {
-		return salesHistoryPointers;
+
+	public Shipment[] getSalesHistory() {
+		return salesHistory;
 	}
-	
+
 	public void setStartingPlace(String startingPlace) {
 		this.startingPlace = startingPlace;
 	}
-	
-	public void setProductsPointer(int[] productsPointer) {
-		this.productsPointer = productsPointer;
+
+	public void setProductsPointer(Product[] products) {
+		this.products = products;
 	}
-	
-	public void setSalesHistorypointers(int[] salesHistoryPointers) {
-		this.salesHistoryPointers = salesHistoryPointers;
+
+	public void setSalesHistory(Shipment[] salesHistory) {
+		this.salesHistory = salesHistory;
 	}
-	
-	public void addProductPointer(int productPointer) {
-		for(int i = 0; i < productsPointer.length; i++) {
-			if(productsPointer[i] == 0) {
-				productsPointer[i] = productPointer;
+
+	public void addProduct(Product product) {
+		for (int i = 0; i < products.length; i++) {
+			if (products[i] == null) {
+				products[i] = product;
 				break;
 			}
 		}
 	}
-	
-	public void addSaleHistoryPointer(int salesHistoryPointer) {
-		for(int i = 0; i < salesHistoryPointers.length; i++) {
-			if(salesHistoryPointers[i] == 0) {
-				salesHistoryPointers[i] = salesHistoryPointer;
+
+	public void addSale(Shipment order) {
+		for (int i = 0; i < salesHistory.length; i++) {
+			if (salesHistory[i] == null) {
+				salesHistory[i] = order;
 				break;
 			}
 		}

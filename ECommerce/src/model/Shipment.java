@@ -3,51 +3,50 @@ package model;
 import java.time.LocalDateTime;
 
 public class Shipment {
+	private User user;
+	private Product[] products;
 	private LocalDateTime startingDate;
 	private LocalDateTime shipmentDate;
-	private int shipmentPlacePointer;
-	private int userPointer;
-	private int[] productPointer;
+	private String shipmentPlace;
 	private String status;
 
-	
-	public Shipment(LocalDateTime shipmentDate, int shipmentPlacePointer, int userPointer, int[] productPointer) {
+	public Shipment(User user, Product[] products, LocalDateTime shipmentDate, String shipmentPlace) {
 		startingDate = LocalDateTime.now();
 		status = "Orden Creada";
 		this.shipmentDate = shipmentDate;
-		this.shipmentPlacePointer = shipmentPlacePointer;
-		this.userPointer = userPointer;
-		this.productPointer = productPointer;
+		this.shipmentPlace = shipmentPlace;
+		this.user = user;
+		this.products = products;
 	}
-	
+
 	public LocalDateTime getStartingDate() {
 		return startingDate;
 	}
-	
+
 	public LocalDateTime getShipmentDate() {
 		return shipmentDate;
 	}
-	
-	public int getShipmentPlacePointer() {
-		return shipmentPlacePointer;
+
+	public String getShipmentPlace() {
+		return shipmentPlace;
 	}
-	
-	public int getUserPointer() {
-		return userPointer;
+
+	public User getUser() {
+		return user;
 	}
-	
-	public int[] getProductPointer() {
-		return productPointer;
+
+	public Product[] getProducts() {
+		return products;
 	}
-	
+
 	public String getStatus() {
 		return status;
 	}
-	
-	public void setShipmentPlacePointer(int shipmentPlacePointer) {
-		this.shipmentPlacePointer = shipmentPlacePointer;
+
+	public void setShipmentPlace(String shipmentPlace) {
+		this.shipmentPlace = shipmentPlace;
 	}
-	
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
