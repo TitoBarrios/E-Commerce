@@ -9,7 +9,7 @@ public class View {
 		console = new Scanner(System.in);
 	}
 
-	public void showMessage(String message) {
+	public void Log(String message) {
 		System.out.println(message);
 	}
 

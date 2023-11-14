@@ -19,6 +19,16 @@ public class Shipment {
 		this.products = products;
 	}
 
+	public int calculateTotalPrice() {
+		int total = 0;
+		for(int  i = 0; i < products.length;i++) {
+			if(products[i] != null) {
+				total += products[i].getPrice();
+			}
+		}
+		return total;
+	}
+	
 	public LocalDateTime getStartingDate() {
 		return startingDate;
 	}

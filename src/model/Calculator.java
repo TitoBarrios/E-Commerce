@@ -11,48 +11,51 @@ public class Calculator {
 	}
 
 	public boolean isUniqueUser(String name) {
-		for (int i = 0; i < dataBase.getUsers().length; i++) {
-			if (dataBase.getUsers()[i] != null) {
-				if (dataBase.getUsers()[i].getName().equals(name)) {
-					return false;
+		for (int i = 0; i < (Type.SELLER.getValue() + 1); i++) {
+			for (int j = 0; j < dataBase.getUsers()[i].length; j++) {
+				if (dataBase.getUsers()[i][j] != null) {
+					if (dataBase.getUsers()[i][j].getName().equals(name)) {
+						return false;
+					}
 				}
 			}
 		}
+
 		return true;
 	}
 
-	public void createUser(String address, String name, String password) {
-		User user = new User(address, name, password);
-		dataBase.addUser(user);
+	public void createUser(Type type, String address, String name, String password) {
+		dataBase.addUser(type, new User(name, password, address));
 	}
 
 	public void becomeSeller(int userPointer, String startingPlace) {
-		Seller seller = new Seller(dataBase.getUsers()[userPointer], startingPlace);
-		dataBase.editUser(null, userPointer);
-		dataBase.addSeller(seller);
+		Seller seller = new Seller(dataBase.getUsers()[Type.USER.getValue()][userPointer], startingPlace);
+		dataBase.editUser(null, Type.USER, userPointer);
+		dataBase.addUser(Type.SELLER, seller);
 	}
 
 	public boolean logInUser(String name, String password) {
-		for (User user : dataBase.getUsers()) {
-			if (user == null) {
-				return false;
-			}
-			if (user.getName().equals(name) && user.getPassword().equals(password)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean logInSeller(String name, String password) {
-		for (Seller seller : dataBase.getSellers()) {
-			if (seller != null) {
-				if (seller.getName().equals(name) && seller.getPassword().equals(password)) {
+		for (int i = 0; i < dataBase.getUsers().length; i++) {
+			for (int j = 0; j < dataBase.getUsers()[i].length; j++) {
+				if (dataBase.getUsers()[i][j] == null) {
+					return false;
+				}
+				if (dataBase.getUsers()[i][j].getName().equals(name)
+						&& dataBase.getUsers()[i][j].getPassword().equals(password)) {
 					return true;
 				}
 			}
 		}
+
 		return false;
+	}
+
+	public int calculatePrice(Product[] products) {
+		int totalPrice = 0;
+		for (int i = 0; i < products.length; i++) {
+			totalPrice += products[i].getPrice();
+		}
+		return totalPrice;
 	}
 
 	public void createNewAddress(User user, String address) {
@@ -63,8 +66,8 @@ public class Calculator {
 		user.editAddress(address, addressPointer);
 	}
 
-	public void createProduct(String name, Seller seller, int category, int price, int quantity) {
-		Product product = new Product(name, seller, category, price, quantity);
+	public void createProduct(String name, Seller seller, int category, int price, int quantity, int daysToBeDelivered) {
+		Product product = new Product(name, seller, category, price, quantity, daysToBeDelivered);
 		dataBase.addProduct(product, category);
 		seller.addProduct(product);
 	}
@@ -80,7 +83,7 @@ public class Calculator {
 		product.setQuantity(quantity);
 	}
 
-	public void createShipment(LocalDateTime shipmentDate, User user, String address, Product products[]) throws Exception {
+	public void createShipment(User user, String address, Product products[]) throws Exception {
 		int total = 0;
 		for (Product product : products) {
 			total += product.getPrice();
@@ -97,7 +100,8 @@ public class Calculator {
 
 		ArrayList<Seller> sellers = new ArrayList<>();
 		ArrayList<ArrayList<Product>> soldProducts = new ArrayList<>();
-
+		LocalDateTime currentDate = LocalDateTime.now();
+		LocalDateTime shipmentDate = LocalDateTime.now();
 		for (int i = 0; i < products.length; i++) {
 			editProductQuantity(products[i], (products[i].getQuantity() - 1));
 			if (i == 0) {
@@ -119,6 +123,9 @@ public class Calculator {
 					soldProducts.get(length).add(products[i]);
 				}
 			}
+			if (shipmentDate.isBefore(currentDate.plusDays(products[i].getDaysToBeDelivered()))) {
+				shipmentDate = currentDate.plusDays(products[i].getDaysToBeDelivered());
+			}
 			products[i].setQuantity(products[i].getQuantity() - 1);
 		}
 
@@ -132,6 +139,21 @@ public class Calculator {
 		Shipment shipment = new Shipment(user, products, shipmentDate, address);
 		dataBase.addShipmentToShipmentHistory(shipment);
 		user.addShipment(shipment);
+	}
+
+	public User searchUser(String name, String password) {
+		for (int i = 0; i < (Type.SELLER.getValue() + 1); i++) {
+			for (int j = 0; j < dataBase.getUsers()[i].length; j++) {
+				if (dataBase.getUsers()[i][j] == null) {
+					return null;
+				}
+				if (dataBase.getUsers()[i][j].equals(name)
+						&& dataBase.getUsers()[i][j].getPassword().equals(password)) {
+					return dataBase.getUsers()[i][j];
+				}
+			}
+		}
+		return null;
 	}
 
 	public void changeShipmentStatus(Shipment shipment, int statusInt) {
